@@ -1,79 +1,5 @@
-builtins = [
-	{
-		tags: ["/g/", "technology", "install gentoo"],
-		title: "technology",
-		url: "http://4chan.org/g/"
-	},
-	{
-		tags: ["facebook", "fb"],
-		title: "facebook",
-		url: "http://facebook.com"
-	},
-	{
-		tags: ["github.com", "github", "git", "code"],
-		title: "github",
-		url: "http://github.com"
-	},
-	{
-		tags: ["gmail.com", "gmail", "mail"],
-		title: "gmail",
-		url: "http://gmail.com"
-	},
-	{
-		tags: ["netflix", "movies"],
-		title: "netflix",
-		url: "http://netflix.com"
-	},
-	{
-		tags: ["etho", "ethoslab"],
-		title: "etho's lab",
-		url: "https://www.youtube.com/user/EthosLab/videos"
-	},
-	{
-		tags: ["pomfse", "ohayou", "hosting", "files"],
-		title: "pomf.se",
-		url: "http://pomf.se/"
-	},
-	{
-		tags: ["comics", "xkcd"],
-		title: "xkcd",
-		url: "http://xkcd.com"
-	}
-];
-
 var topResult;
 var currentIndex = 0;
-
-var engines = [
-	{
-		title: "duck duck go",
-		url: 'https://next.duckduckgo.com/?q='
-	},
-	{
-		title: "wolfram|alpha",
-		url: 'https://www.wolframalpha.com/input/?i='
-	},
-	{
-		title: "wikipedia",
-		url: 'https://wikipedia.org/wiki/Special:Search?search='
-	},
-	{
-		title: "maps",
-		url: 'https://www.google.com/maps/place/'
-	},
-	{
-		title: "youtube",
-		url: 'https://youtube.com/results?search_query='
-	},
-	{
-		title: "images",
-		url: 'https://www.google.com/search?tbm=isch&q='
-	}
-];
-
-
-
-
 
 // match a string to a query by more than just nieve indexOf,
 // the way that sublime does it
@@ -171,7 +97,7 @@ processSearch = function(str) {
 			url: each.url + encodeURIComponent(encoded),
 			title: each.title
 		};
-	}, engines);
+	}, accessTable("engines"));
 }
 
 processNormal = function(query) {
@@ -186,7 +112,7 @@ processNormal = function(query) {
 		return set;
 	}, function(each) {
 		return each;
-	}, builtins);
+	}, accessTable("builtins"));
 }
 
 htmlreducer = function(filterer, mapper, source) {
@@ -198,9 +124,6 @@ htmlreducer = function(filterer, mapper, source) {
 	}, "");
 }
 
-
-
-
 process = function(string) {
 	if (!string) {
 		return "";
@@ -209,17 +132,26 @@ process = function(string) {
 	switch (string[0]) {
 		case "@":
 			return processSearch(string.substring(1));
+		case "$":
+			return shellcmd(string.substring(1));
 		default:
 			return processNormal(string);
 	}
 }
 
+shellcmd = function(cmd) {
+	args = cmd.split(" ");
+	return htmlreducer(function(each){
+		return each;
+	}, function(each){
+		return {
+			url: "#",
+			title: each
+		};
+	}, args);
+}
 
-// focus the search bar
-// add the type suggestion into the place where results go
-window.onload = function() {
-	document.getElementById("mainsearch").focus();
-	document.getElementById("searchresults").innerHTML = "<div id = 'typesomething'> Type Something </div>"
-};
+
+
 
 
