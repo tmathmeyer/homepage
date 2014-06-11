@@ -6,7 +6,7 @@ body {
 #mascot {
 	position:fixed;
 	bottom:0;
-	left:0;
+	right:0;
 }
 
 #mainsearch {
@@ -69,4 +69,12 @@ a {
 
 textarea:focus, input:focus {
     outline: 0;
+}
+
+#typesomething {
+	width: 100%;
+	height: 450px;
+	font-size: 120px;
+	text-align: center;
+	line-height: 400px;
 }

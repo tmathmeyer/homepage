@@ -1,7 +1,7 @@
 builtins = [
 	{
-		tags: ["/g/", "technology"],
-		title: "technology",
+		tags: ["/g/", "technology", "install gentoo"],
+		title: "technolo/g",
 		url: "http://4chan.org/g/"
 	},
 	{
@@ -40,10 +40,6 @@ var topResult;
 var currentIndex = 0;
 
 var engines = [
-	{
-		title: "google",
-		url: 'https://www.google.com/#q='
-	},
 	{
 		title: "duck duck go",
 		url: 'https://next.duckduckgo.com/?q='
@@ -158,7 +154,11 @@ processMetaOption = function(str) {
 	return engines.filter(function(each){
 		return matchToString(parts[0], each.title);
 	}).map(function(each){
-		return "<div class='result'><a class='link' href='"+each.url+encodeURIComponent(parts[1].trim())+"'>" + each.title + "</a></div>";
+		var encoded = "NaN";
+		if (parts[1]) {
+			encoded = parts[1].trim();
+		}
+		return "<div class='result'><a class='link' href='"+each.url+encodeURIComponent(encoded)+"'>" + each.title + "</a></div>";
 	}).reduce(function(previousValue, currentValue) {
 		return previousValue + currentValue;
 	}, "");
