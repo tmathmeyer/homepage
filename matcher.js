@@ -1,11 +1,7 @@
 builtins = [
 	{
 		tags: ["/g/", "technology", "install gentoo"],
-<<<<<<< HEAD
-		title: "technolo/g",
-=======
 		title: "technology",
->>>>>>> gh-pages
 		url: "http://4chan.org/g/"
 	},
 	{
@@ -37,14 +33,11 @@ builtins = [
 		tags: ["pomfse", "ohayou", "hosting", "files"],
 		title: "pomf.se",
 		url: "http://pomf.se/"
-<<<<<<< HEAD
-=======
 	},
 	{
 		tags: ["comics", "xkcd"],
 		title: "xkcd",
 		url: "http://xkcd.com"
->>>>>>> gh-pages
 	}
 ];
 
@@ -81,14 +74,10 @@ var engines = [
 
 
 
-<<<<<<< HEAD
-matchToString = function(query, search) {
-=======
 
 // match a string to a query by more than just nieve indexOf,
 // the way that sublime does it
 queryInString = function(query, search) {
->>>>>>> gh-pages
 	var ndx = 0;
 	for (var i = 0, len = query.length; i < len; i++) {
 		ndx = search.indexOf(query[i]);
@@ -100,26 +89,10 @@ queryInString = function(query, search) {
 	return ndx != -1;
 }
 
-<<<<<<< HEAD
-getMatchingResults = function(query) {
-	return builtins.filter(function(each){
-		var set = false;
-		for (var i = 0, len = each.tags.length; i < len; i++) {
-			if (matchToString(query, each.tags[i])){
-				set = true;
-				i = len;
-			}
-		}
-		return set;
-	});
-}
-
-=======
 
 
 // block the use of the arrow keys for anything except
 // what is used in the keyup listener
->>>>>>> gh-pages
 document.addEventListener("keydown", function(e){
 	if (e.keyCode > 36 && e.keyCode < 41) {
 		e.preventDefault();
@@ -127,50 +100,6 @@ document.addEventListener("keydown", function(e){
 	}
 });
 
-<<<<<<< HEAD
-document.addEventListener("keyup", function(e){
-	console.log(e.keyCode);
-	if (e.keyCode == 13) {
-		var sel = document.getElementById("selected");
-		if (sel) {			
-			document.location.href = sel.getElementsByClassName("link")[0].href
-		} else {
-			document.location.href = "https://www.google.com/#q="+encodeURIComponent(document.getElementById("mainsearch").value);
-		}
-	} else if (e.keyCode == 38) {
-		upArrow();
-		e.stopPropagation();
-	} else if (e.keyCode == 40) {
-		downArrow();
-		e.stopPropagation();
-	} else {
-		var embed = document.getElementById("searchresults");
-		var searchterm = document.getElementById("mainsearch").value;
-		embed.innerHTML = process(searchterm);
-		currentIndex = 0;
-		upArrow();
-	}
-});
-
-upArrow = function() {
-	var results = document.getElementsByClassName("result");
-	if (results[0]) {
-		results[currentIndex].removeAttribute("id");
-		currentIndex = currentIndex==0?0:currentIndex-1;
-		results[currentIndex].setAttribute("id", "selected");
-	}
-}
-
-downArrow = function() {
-	var results = document.getElementsByClassName("result");
-	if (results[0]) {
-		results[currentIndex].removeAttribute("id");
-		currentIndex = currentIndex+1;
-		if (currentIndex == results.length) {
-			currentIndex = currentIndex-1;
-		}
-		results[currentIndex].setAttribute("id", "selected");
-=======
 
 
 // listen for keys in the text box
@@ -224,56 +153,20 @@ var arrows = {
 			}
 			results[currentIndex].setAttribute("id", "selected");
 		}
->>>>>>> gh-pages
 	}
 }
 
 
-<<<<<<< HEAD
-
-processMetaOption = function(str) {
-	var parts = str.split(":");
-
-	return engines.filter(function(each){
-		return matchToString(parts[0], each.title);
-	}).map(function(each){
-=======
 processSearch = function(str) {
 	var parts = str.split(":");
 
 	return htmlreducer(function(each){
 		return queryInString(parts[0], each.title);
 	}, function(each) {
->>>>>>> gh-pages
 		var encoded = "NaN";
 		if (parts[1]) {
 			encoded = parts[1].trim();
 		}
-<<<<<<< HEAD
-		return "<div class='result'><a class='link' href='"+each.url+encodeURIComponent(encoded)+"'>" + each.title + "</a></div>";
-	}).reduce(function(previousValue, currentValue) {
-		return previousValue + currentValue;
-	}, "");
-}
-
-process = function(string) {
-	if (string) {
-		if (string[0] == ':') {
-			return processMetaOption(string.substring(1));
-		}
-		return getMatchingResults(string).map(function(each){
-			return "<div class='result'><a class='link' href='"+each.url + "'>" + each.title + "</a></div>";
-		}).reduce(function(previousValue, currentValue){
-			return previousValue + currentValue;
-		}, "");
-	} else {
-		return "";
-	}
-}
-
-window.onload = function() {
-	document.getElementById("mainsearch").focus();
-=======
 		return {
 			url: each.url + encodeURIComponent(encoded),
 			title: each.title
@@ -302,7 +195,7 @@ htmlreducer = function(filterer, mapper, source) {
 		return "<div class='result'><a class='link' href='"+results.url + "'>" + results.title + "</a></div>";
 	}).reduce(function(a, b){
 		return a+b;
-	});
+	}, "");
 }
 
 
@@ -327,7 +220,6 @@ process = function(string) {
 window.onload = function() {
 	document.getElementById("mainsearch").focus();
 	document.getElementById("searchresults").innerHTML = "<div id = 'typesomething'> Type Something </div>"
->>>>>>> gh-pages
 };
 
 
