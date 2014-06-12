@@ -70,6 +70,42 @@ var builtins = [
 ];
 
 
+var cmds = {
+	list: function(args) {
+		var ops = {
+			add: function(name) {
+				var tblnm = name.shift();
+				var data = name.reduce(function(a, b){
+					return a+ " "+b;
+				}, "");
+				writeToTable(tblnm, data);
+			},
+			show: function(name) {
+				document.getElementById("searchresults").innerHTML = 
+					htmlreducer(function(each){
+						return true;
+					}, function(each) {
+						return { url:"#", title:each };
+					}, accessTable(name[0]));
+			},
+			make: function(name) {
+				createTable(name[0], []);
+				writeToTable("tablelist", name[0]);
+			},
+			delete: function(name) {
+				removeTable(name[0]);
+			}
+		};
+		ops[args.shift()](args);
+	},
+	reset: function() {
+		if (typeof(Storage) !== "undefined") {
+			localStorage.clear();
+		}
+	}
+};
+
+
 
 
 
@@ -81,13 +117,17 @@ window.onload = function() {
 
 	createTable("builtins", builtins);
 	createTable("engines", engines);
+	createTable("list", ["add", "make", "show", "delete"]);
+	createTable("cmds", ["list"]);
+	createTable("tablelist", []);
 };
 
 // create a table with the builtin data
 createTable = function(tableName, init) {
 	if (typeof(Storage) !== "undefined") {
-		console.log("fucl");
-    	localStorage.setItem(tableName, JSON.stringify(init));
+		if (!localStorage[tableName]) {
+    		localStorage.setItem(tableName, JSON.stringify(init));
+		}
 	} else {
     	throw "ERROR>CANNOT WRITE TO LOCAL STORAGE";
 	}
@@ -96,9 +136,11 @@ createTable = function(tableName, init) {
 // request a table from the "db" (its just an array)
 accessTable = function(tableName) {
 	if (typeof(Storage) !== "undefined") {
-    	var hmm = JSON.parse(localStorage[tableName]);
-    	console.log(hmm);
-    	return hmm;
+		var access = localStorage[tableName];
+		if (access) {
+    		return JSON.parse(access);
+    	}
+    	return [];
 	} else {
     	return accessDefaults(tableName);
 	}
@@ -107,8 +149,20 @@ accessTable = function(tableName) {
 // add an element to the table
 writeToTable = function(tableName, datachunk) {
 	if (typeof(Storage) !== "undefined") {
-    	localStorage[tableName] = JSON.stringify(JSON.parse(localStorage[tableName]).push(datachunk));
+		var asObj = JSON.parse(localStorage[tableName]);
+		if (!asObj) {
+			asObj = [];
+		}
+		asObj.push(datachunk);
+    	localStorage[tableName] = JSON.stringify(asObj);
 	} else {
     	throw "ERROR>CANNOT WRITE TO LOCAL STORAGE";
+	}
+}
+
+// add an element to the table
+removeTable = function(tableName) {
+	if (typeof(Storage) !== "undefined") {
+		delete localStorage[tableName];
 	}
 }

@@ -1,5 +1,6 @@
 var topResult;
 var currentIndex = 0;
+var shell = false;
 
 // match a string to a query by more than just nieve indexOf,
 // the way that sublime does it
@@ -20,7 +21,7 @@ queryInString = function(query, search) {
 // block the use of the arrow keys for anything except
 // what is used in the keyup listener
 document.addEventListener("keydown", function(e){
-	if (e.keyCode > 36 && e.keyCode < 41) {
+	if ( (e.keyCode > 36 && e.keyCode < 41) || e.keyCode == 9 ) {
 		e.preventDefault();
 		e.stopPropagation();
 	}
@@ -34,19 +35,38 @@ document.addEventListener("keyup", function(e){
 		case 91: // super
 		case 16: // shift
 			break;
-		case 13:
-			var sel = document.getElementById("selected");
-			if (sel) {
-				document.location.href = sel.getElementsByClassName("link")[0].href
+		case 13: // enter
+			var searchval = document.getElementById("mainsearch").value;
+			document.getElementById("mainsearch").value = "";
+			if(!shell) {
+				var sel = document.getElementById("selected");
+				if (sel) {
+					document.location.href = sel.getElementsByClassName("link")[0].href
+				} else {
+					document.location.href = "https://www.google.com/#q="+encodeURIComponent(searchval);
+				}
 			} else {
-				document.location.href = "https://www.google.com/#q="+encodeURIComponent(document.getElementById("mainsearch").value);
+				parseCommand(searchval.substring(1).split(" "));
 			} break;
+			embed.innerHTML = "";
 		case 38:
 			arrows.UP();
 			break;
 		case 40:
 			arrows.DOWN();
 			break;
+		case 9:
+			var searchval = document.getElementById("mainsearch").value;
+			var sel = document.getElementById("selected");
+			if (sel) {
+				result = sel.getElementsByClassName("link")[0].innerHTML;
+				var svals = searchval.split(" ");
+				svals.pop();
+				svals.push(result);
+				document.getElementById("mainsearch").value = svals.reduce(function(a, b){
+					return a + " " + b;
+				}, "").trim()+" ";
+			}
 		default:
 			var embed = document.getElementById("searchresults");
 			var searchterm = document.getElementById("mainsearch").value;
@@ -129,29 +149,55 @@ process = function(string) {
 		return "";
 	}
 
+	shell = false;
+
 	switch (string[0]) {
 		case "@":
 			return processSearch(string.substring(1));
 		case "$":
+			shell = true;
 			return shellcmd(string.substring(1));
 		default:
 			return processNormal(string);
 	}
 }
 
+
+
 shellcmd = function(cmd) {
-	args = cmd.split(" ");
-	return htmlreducer(function(each){
-		return each;
-	}, function(each){
-		return {
-			url: "#",
-			title: each
-		};
-	}, args);
+	var args = cmd.split(" ");
+	if (args[0] == "") { args.shift(); }
+	searchin = [];
+	switch(args.length) {
+		case 1:
+			searchin = accessTable("cmds");
+			break;
+		case 2:
+			searchin = accessTable(args[0]);
+			break;
+		case 3:
+			searchin = accessTable("tablelist");
+			break;
+		default:
+			searchin = [];
+			break;
+	}
+	var top = args.pop();
+	return htmlreducer(function(each) {
+		return queryInString(top, each);
+	}, function(each) {
+		return { url: "#", title: each };
+	}, searchin);
 }
 
 
 
+
+parseCommand = function(command) {
+	if (command[0] === "") {
+		command.shift();
+	}
+	cmds[command.shift()](command);
+}
 
 
