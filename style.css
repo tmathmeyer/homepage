@@ -7,6 +7,7 @@ body {
 	position:fixed;
 	bottom:0;
 	right:0;
+    display: none;
 }
 
 #mainsearch {
@@ -42,12 +43,12 @@ body {
 	border: 1px solid #555;
 	position: fixed;
 	top:80px;
-	width:1200px;
-	margin-left:-600px;
+	width:600px;
+	margin-left:-300px;
 	left:50%;
 	height:500px;
 	background-color: rgba(51, 51, 51, .9);
-	overflow: scroll;
+	overflow: hidden;
 }
 
 a {
@@ -58,7 +59,7 @@ a {
 
 #searchresults {
 	width:100%;
-
+    overflow: hidden;
 	position: relative;
 	top: 3px;
 	text-shadow: 0px 2px 3px #555;

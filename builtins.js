@@ -1,33 +1,48 @@
 var engines = [
 	{
-		title: "duck duck go",
+        title: "@duck duck go: ",
 		url: 'https://next.duckduckgo.com/?q='
 	},
 	{
-		title: "wolfram|alpha",
+        title: "@wolfram|alpha: ",
 		url: 'https://www.wolframalpha.com/input/?i='
 	},
 	{
-		title: "wikipedia",
+        title: "@wikipedia: ",
 		url: 'https://wikipedia.org/wiki/Special:Search?search='
 	},
 	{
-		title: "maps",
+        title: "@maps: ",
 		url: 'https://www.google.com/maps/place/'
 	},
 	{
-		title: "youtube",
+        title: "@youtube: ",
 		url: 'https://youtube.com/results?search_query='
 	},
 	{
-		title: "images",
+        title: "@images: ",
 		url: 'https://www.google.com/search?tbm=isch&q='
 	}
 ];
 
 
 var builtins = [
-	{
+    {
+        tags: ["my", "wpi", "my.wpi"],
+        title: "mywpi",
+        url: "http://my.wpi.edu"
+    },
+    {
+        tags: ["bank", "santander", "sovereign", "money"],
+        title: "santander",
+        url: "http://www.santanderbank.com/us"
+    },
+    {
+        tags: ["reddit"],
+        title: "reddit",
+        url: "http://reddit.com"
+    },
+    {
 		tags: ["/g/", "technology", "install gentoo"],
 		title: "technology",
 		url: "http://4chan.org/g/"
@@ -125,9 +140,9 @@ window.onload = function() {
 // create a table with the builtin data
 createTable = function(tableName, init) {
 	if (typeof(Storage) !== "undefined") {
-		if (!localStorage[tableName]) {
+		//if (!localStorage[tableName]) {
     		localStorage.setItem(tableName, JSON.stringify(init));
-		}
+		//}
 	} else {
     	throw "ERROR>CANNOT WRITE TO LOCAL STORAGE";
 	}
